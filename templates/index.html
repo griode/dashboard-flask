@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard UI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-white text-sm font-light">
+    <div class="flex flex-col md:flex-row h-screen">
+      <!-- Sidebar -->
+      <aside class="w-full md:w-1/5 bg-white p-6 border-r">
+        <h1 class="text-xl font-bold">logip</h1>
+        <nav class="mt-6">
+          <ul>
+            <li class="mb-4">
+              <a href="http://127.0.0.1:5000/" class="text-gray-700 font-medium"
+                >Home</a
+              >
+            </li>
+            <li class="mb-4">
+              <a
+                href="http://127.0.0.1:5000/contact"
+                class="text-gray-700 font-medium"
+                >Contact</a
+              >
+            </li>
+            <li class="mb-4">
+              <a
+                href="http://127.0.0.1:5000/about"
+                class="text-gray-700 font-medium"
+                >About</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 p-6">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div>
+            <h2 class="text-2xl font-semibold">Hello, {{ user.name }}</h2>
+            <p>Track team progress here. You almost reach a goal!</p>
+          </div>
+          <p class="text-gray-500">16 May, 2023</p>
+        </div>
+
+        <!-- Statistics -->
+        <div
+          class="flex items-center justify-between gap-4 mt-6 border-t border-b"
+        >
+          <div class="p-4 bg-white">
+            <p class="text-gray-500">Finished</p>
+            <p class="text-xl font-bold">18</p>
+          </div>
+          <div class="h-12 border-r"></div>
+          <div class="p-4 bg-white">
+            <p class="text-gray-500">Tracked</p>
+            <p class="text-xl font-bold">31h</p>
+          </div>
+          <div class="h-12 border-r"></div>
+          <div class="p-4 bg-white">
+            <p class="text-gray-500">Efficiency</p>
+            <p class="text-xl font-bold">93%</p>
+          </div>
+        </div>
+        <!-- Graph -->
+        <h3 class="mt-6 text-lg font-semibold">Graph</h3>
+        <div class="mt-4">
+          {% if plot %}
+          <img src="data:image/png;base64,{{ plot }}" alt="Graph" />
+          {% else %}
+          <p
+            class="text-gray-500 p-5 flex border items-center rounded-xl justify-center"
+          >
+            ⿻ No tasks found ⿻
+          </p>
+          {% endif %}
+        </div>
+
+        <!-- Current Tasks -->
+        <h3 class="mt-6 text-lg font-semibold">Current Tasks</h3>
+        <table class="mt-4 w-full bg-white">
+          <tbody>
+            {% for task in tasks %}
+            <tr>
+              <td class="py-4">{{ task.title }}</td>
+              <td class="py-4 text-gray-500">{{ task.status }}</td>
+              <td class="py-4 text-gray-500">{{ task.due_date }}</td>
+              <td class="py-4 text-gray-500">
+                <button>...</button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </main>
+
+      <!-- Right Sidebar -->
+      <aside class="w-full md:w-1/4 bg-white p-6 shadow-md">
+        <div class="flex items-center space-x-4">
+          <div
+            class="w-12 h-12 bg-gray-300 rounded-full overflow-hidden bg-gray-50"
+          >
+            <img src="{{user.photo_url}}" class="object-cover w-full h-full" />
+          </div>
+          <div>
+            <p class="font-medium">{{ user.name }}</p>
+            <p class="text-gray-500 text-sm">@{{ user.username }}</p>
+          </div>
+        </div>
+
+        <h3 class="mt-6 text-lg font-semibold">Activity</h3>
+        <div class="mt-4">
+          <p class="font-medium">Floyd Miles</p>
+          <p class="text-gray-500">Commented on Stark Project</p>
+          <p class="text-sm text-blue-500">
+            "Hi! Next week we'll start a new project..."
+          </p>
+        </div>
+        <div class="mt-4">
+          <p class="font-medium">Guy Hawkins</p>
+          <p class="text-gray-500">Added a file to 7Heros Project</p>
+        </div>
+        <div>
+          <form action="/add_task" method="post" class="mt-6">
+            <h1 class="text-xl font-bold">Add Task</h1>
+            <div class="space-y-2 mt-4">
+              <div class="py-1 px-2 border-2 rounded-xl">
+                <label class="text-xs" for="name">Name</label><br />
+                <input
+                  placeholder="Enter task name"
+                  class="w-full h-full outline-none font-semibold"
+                  type="text"
+                  id="title"
+                  name="title"
+                  required
+                />
+              </div>
+              <div class="py-1 px-2 border-2 rounded-xl">
+                <label class="text-xs" for="name">Name</label><br />
+                <select
+                  id="status"
+                  name="status"
+                  class="w-full h-full outline-none font-semibold"
+                  required
+                >
+                  <option value="In progress">In progress</option>
+                  <option value="On hold">On hold</option>
+                  <option value="Done">Done</option>
+                </select>
+              </div>
+              <div class="py-1 px-2 border-2 rounded-xl">
+                <label class="text-xs" for="name">Progress</label><br />
+                <input
+                  placeholder="progress"
+                  class="w-full text-black h-full outline-none font-semibold"
+                  type="range"
+                  id="progress"
+                  name="progress"
+                  required
+                  style="accent-color: black"
+                />
+              </div>
+              <div class="py-1 px-2 border-2 rounded-xl">
+                <label class="text-xs" for="name">Due date</label><br />
+                <input
+                  placeholder="Due date"
+                  class="w-full h-full outline-none font-semibold"
+                  type="date"
+                  id="due_date"
+                  name="due_date"
+                  required
+                />
+              </div>
+            </div>
+            <button
+              class="px-4 py-3 mt-4 w-full rounded-xl bg-black text-white font-semibold"
+              type="submit"
+            >
+              Add Task
+            </button>
+          </form>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>
